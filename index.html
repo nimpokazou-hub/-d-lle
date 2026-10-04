@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<title>Ôdèlle — AI Sports Intelligence</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#050505;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+.app{
+ max-width:520px;
+ margin:auto;
+ min-height:100vh;
+ padding-bottom:90px;
+ background:
+ radial-gradient(circle at 50% 0%,#30240c 0,#090909 30%,#050505 70%);
+}
+header{
+ padding:22px 18px 12px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+.logo{
+ color:#f4c542;
+ font-size:30px;
+ font-weight:800;
+}
+.logo small{
+ display:block;
+ color:#999;
+ font-size:8px;
+ letter-spacing:3px;
+ text-align:center;
+}
+.lang{
+ background:#111;
+ border:1px solid #8d6b1b;
+ color:#f4c542;
+ border-radius:10px;
+ padding:9px;
+}
+.hero{
+ margin:12px 16px;
+ padding:24px;
+ border-radius:20px;
+ border:1px solid #5c4615;
+ background:linear-gradient(135deg,#171208,#0d1217);
+ box-shadow:0 15px 45px #000;
+}
+h1{font-size:25px;margin:0 0 10px}
+.muted{color:#9da5ad;line-height:1.5}
+.gold{
+ width:100%;
+ border:0;
+ border-radius:13px;
+ padding:15px;
+ background:linear-gradient(#ffdb63,#c59019);
+ color:#080808;
+ font-size:15px;
+ font-weight:bold;
+ margin-top:12px;
+}
+section{padding:8px 16px}
+h2{font-size:19px}
+.sports{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+.sport{
+ background:#0d1217;
+ border:1px solid #26313a;
+ border-radius:15px;
+ padding:15px;
+ cursor:pointer;
+}
+.sport:hover{border-color:#c99b28}
+.icon{font-size:25px}
+.sport b{display:block;margin-top:8px}
+.matches{display:grid;gap:10px}
+.match{
+ background:#0d1217;
+ border:1px solid #26313a;
+ border-radius:15px;
+ padding:15px;
+}
+.small{color:#8e979f;font-size:11px;margin-bottom:12px}
+.teams{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ font-weight:bold;
+ gap:8px;
+}
+.outline{
+ width:100%;
+ margin-top:13px;
+ padding:11px;
+ border-radius:10px;
+ border:1px solid #a77c18;
+ background:#151208;
+ color:#f4c542;
+}
+.analysis{
+ display:none;
+ margin:15px 16px;
+ padding:18px;
+ border-radius:16px;
+ border:1px solid #70551a;
+ background:#0c0f12;
+}
+.analysis.show{display:block}
+.probs{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:7px;
+}
+.prob{
+ text-align:center;
+ border:1px solid #303943;
+ border-radius:12px;
+ padding:11px 4px;
+}
+.prob b{
+ display:block;
+ color:#f4c542;
+ font-size:23px;
+ margin-bottom:5px;
+}
+.factor{
+ margin-top:9px;
+ padding:11px;
+ background:#11161b;
+ border-radius:10px;
+ color:#c4cbd1;
+}
+.disclaimer{
+ font-size:11px;
+ color:#777;
+ margin-top:15px;
+}
+nav{
+ position:fixed;
+ bottom:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:100%;
+ max-width:520px;
+ display:flex;
+ background:#080909f5;
+ border-top:1px solid #252a2e;
+}
+nav button{
+ flex:1;
+ background:none;
+ border:0;
+ color:#8c949c;
+ padding:14px 3px;
+ font-size:11px;
+}
+nav button:first-child{color:#f4c542}
+.empty{
+ text-align:center;
+ padding:25px;
+ color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+<div class="logo">
+Ôdèlle
+<small>AI SPORTS INTELLIGENCE</small>
+</div>
+
+<select class="lang" id="language">
+<option value="fr">🇫🇷 FR</option>
+<option value="en">🇬🇧 EN</option>
+</select>
+</header>
+
+<div class="hero">
+
+<h1 id="title">
+L'intelligence au service du sport.
+</h1>
+
+<p class="muted" id="intro">
+Analyse des matchs, statistiques et probabilités dans une interface intelligente.
+</p>
+
+<button class="gold" onclick="analyze('football')" id="mainButton">
+🔮 ANALYSER UN MATCH
+</button>
+
+</div>
+
+<section>
+
+<h2 id="sportsTitle">Sports</h2>
+
+<div class="sports">
+
+<div class="sport" onclick="selectSport('Football')">
+<div class="icon">⚽</div>
+<b>Football</b>
+<span class="muted">Matchs & statistiques</span>
+</div>
+
+<div class="sport" onclick="selectSport('Basketball')">
+<div class="icon">🏀</div>
+<b>Basketball</b>
+<span class="muted">NBA & Europe</span>
+</div>
+
+<div class="sport" onclick="selectSport('Tennis')">
+<div class="icon">🎾</div>
+<b>Tennis</b>
+<span class="muted">ATP & WTA</span>
+</div>
+
+<div class="sport" onclick="selectSport('Volleyball')">
+<div class="icon">🏐</div>
+<b>Volleyball</b>
+<span class="muted">Championnats</span>
+</div>
+
+<div class="sport" onclick="selectSport('MMA')">
+<div class="icon">🥊</div>
+<b>MMA / Boxe</b>
+<span class="muted">Combats</span>
+</div>
+
+<div class="sport" onclick="selectSport('Motorsport')">
+<div class="icon">🏎️</div>
+<b>Motorsport</b>
+<span class="muted">F1 & courses</span>
+</div>
+
+</div>
+</section>
+
+<section>
+
+<h2 id="matchesTitle">Matchs à analyser</h2>
+
+<div class="matches">
+
+<div class="match">
+
+<div class="small">⚽ FOOTBALL · DÉMONSTRATION</div>
+
+<div class="teams">
+<span>Paris SG</span>
+<span>VS</span>
+<span>Marseille</span>
+</div>
+
+<button class="outline" onclick="analyze('football')">
+Voir l'analyse IA →
+</button>
+
+</div>
+
+<div class="match">
+
+<div class="small">🏀 BASKETBALL · DÉMONSTRATION</div>
+
+<div class="teams">
+<span>Lakers</span>
+<span>VS</span>
+<span>Warriors</span>
+</div>
+
+<button class="outline" onclick="analyze('basket')">
+Voir l'analyse IA →
+</button>
+
+</div>
+
+<div class="match">
+
+<div class="small">🎾 TENNIS · DÉMONSTRATION</div>
+
+<div class="teams">
+<span>Joueur A</span>
+<span>VS</span>
+<span>Joueur B</span>
+</div>
+
+<button class="outline" onclick="analyze('tennis')">
+Voir l'analyse IA →
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<div class="analysis" id="analysis">
+
+<h2>🧠 <span id="analysisTitle">Analyse Ôdèlle</span></h2>
+
+<div class="probs" id="probabilities"></div>
+
+<h3 id="factorsTitle">Facteurs analysés</h3>
+
+<div id="factors"></div>
+
+<p class="disclaimer" id="disclaimer">
+Les probabilités sont indicatives. Aucun résultat sportif n'est garanti.
+</p>
+
+</div>
+
+</div>
+
+<nav>
+
+<button>⌂<br><span id="home">Accueil</span></button>
+
+<button>⌕<br><span id="explore">Explorer</span></button>
+
+<button>☆<br><span id="favorites">Favoris</span></button>
+
+<button>◷<br><span id="history">Historique</span></button>
+
+</nav>
+
+<script>
+
+let english=false;
+
+const translations={
+fr:{
+title:"L'intelligence au service du sport.",
+intro:"Analyse des matchs, statistiques et probabilités dans une interface intelligente.",
+button:"🔮 ANALYSER UN MATCH",
+sports:"Sports",
+matches:"Matchs à analyser",
+factors:"Facteurs analysés",
+home:"Accueil",
+explore:"Explorer",
+favorites:"Favoris",
+history:"Historique",
+disclaimer:"Les probabilités sont indicatives. Aucun résultat sportif n'est garanti."
+},
+en:{
+title:"Intelligence for sports.",
+intro:"Analyze matches, statistics and probabilities with an intelligent sports engine.",
+button:"🔮 ANALYZE A MATCH",
+sports:"Sports",
+matches:"Matches to analyze",
+factors:"Analyzed factors",
+home:"Home",
+explore:"Explore",
+favorites:"Favorites",
+history:"History",
+disclaimer:"Probabilities are indicative. No sports result is guaranteed."
+}
+};
+
+document.getElementById("language").addEventListener("change",function(){
+ english=this.value==="en";
+ updateLanguage();
+});
+
+function updateLanguage(){
+
+let t=english?translations.en:translations.fr;
+
+document.getElementById("title").textContent=t.title;
+document.getElementById("intro").textContent=t.intro;
+document.getElementById("mainButton").textContent=t.button;
+document.getElementById("sportsTitle").textContent=t.sports;
+document.getElementById("matchesTitle").textContent=t.matches;
+document.getElementById("factorsTitle").textContent=t.factors;
+document.getElementById("home").textContent=t.home;
+document.getElementById("explore").textContent=t.explore;
+document.getElementById("favorites").textContent=t.favorites;
+document.getElementById("history").textContent=t.history;
+document.getElementById("disclaimer").textContent=t.disclaimer;
+
+}
+
+function selectSport(sport){
+
+alert(
+english
+? "Ôdèlle is ready to analyze "+sport+"."
+: "Ôdèlle est prête à analyser le "+sport+"."
+);
+
+}
+
+function analyze(type){
+
+let data;
+
+if(type==="football"){
+
+data={
+names:english
+?["Paris SG","Draw","Marseille"]
+:["Paris SG","Nul","Marseille"],
+values:["65%","20%","15%"],
+factors:english
+?[
+"Recent form",
+"Attack / defense",
+"Home advantage",
+"Previous meetings"
+]
+:[
+"Forme récente",
+"Attaque / défense",
+"Avantage domicile",
+"Confrontations précédentes"
+]
+};
+
+}
+
+else if(type==="basket"){
+
+data={
+names:["Lakers","Draw","Warriors"],
+values:["57%","0%","43%"],
+factors:english
+?[
+"Offensive efficiency",
+"Recent form",
+"Rebounds",
+"Home advantage"
+]
+:[
+"Efficacité offensive",
+"Forme récente",
+"Rebonds",
+"Avantage domicile"
+]
+};
+
+}
+
+else{
+
+data={
+names:english
+?["Player A","Player B","—"]
+:["Joueur A","Joueur B","—"],
+values:["58%","42%","—"],
+factors:english
+?[
+"Recent performance",
+"Surface record",
+"Serve efficiency",
+"Head-to-head"
+]
+:[
+"Performances récentes",
+"Résultats sur la surface",
+"Efficacité au service",
+"Confrontations"
+]
+};
+
+}
+
+let box=document.getElementById("probabilities");
+
+box.innerHTML="";
+
+for(let i=0;i<3;i++){
+
+box.innerHTML+=
+'<div class="prob">'+
+'<b>'+data.values[i]+'</b>'+
+data.names[i]+
+'</div>';
+
+}
+
+let factors=document.getElementById("factors");
+
+factors.innerHTML="";
+
+data.factors.forEach(function(f){
+
+factors.innerHTML+=
+'<div class="factor">✓ '+f+'</div>';
+
+});
+
+document.getElementById("analysis").classList.add("show");
+
+document.getElementById("analysis").scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+</script>
+
+</body>
+  </html>
