@@ -512,7 +512,213 @@ behavior:"smooth"
 });
 
 }
+// ===== INTERACTIONS ÔDÈLLE =====
 
+const sportData = {
+  football: {
+    icon: "⚽",
+    title: "Analyse Football",
+    teams: ["Paris SG", "Marseille"],
+    probabilities: ["65%", "20%", "15%"],
+    names: ["Paris SG", "Nul", "Marseille"],
+    text: "Analyse de la forme récente, de l'attaque, de la défense et de l'avantage du terrain."
+  },
+
+  basketball: {
+    icon: "🏀",
+    title: "Analyse Basketball",
+    teams: ["Lakers", "Warriors"],
+    probabilities: ["57%", "43%"],
+    names: ["Lakers", "Warriors"],
+    text: "Analyse de la forme, de l'efficacité offensive, des rebonds et des performances récentes."
+  },
+
+  tennis: {
+    icon: "🎾",
+    title: "Analyse Tennis",
+    teams: ["Joueur A", "Joueur B"],
+    probabilities: ["56%", "44%"],
+    names: ["Joueur A", "Joueur B"],
+    text: "Analyse de la forme récente, du service, du retour et des performances sur la surface."
+  },
+
+  volleyball: {
+    icon: "🏐",
+    title: "Analyse Volleyball",
+    teams: ["Équipe A", "Équipe B"],
+    probabilities: ["54%", "46%"],
+    names: ["Équipe A", "Équipe B"],
+    text: "Analyse des performances, des séries récentes, de l'attaque et de la défense."
+  },
+
+  combat: {
+    icon: "🥊",
+    title: "Analyse MMA / Boxe",
+    teams: ["Combattant A", "Combattant B"],
+    probabilities: ["58%", "42%"],
+    names: ["Combattant A", "Combattant B"],
+    text: "Analyse de la forme, du style de combat, des statistiques et des performances récentes."
+  },
+
+  motorsport: {
+    icon: "🏎️",
+    title: "Analyse Motorsport",
+    teams: ["Pilote A", "Pilote B"],
+    probabilities: ["52%", "48%"],
+    names: ["Pilote A", "Pilote B"],
+    text: "Analyse des performances du pilote, de la voiture, du circuit et des résultats récents."
+  }
+};
+
+
+// Fonction d'analyse pour tous les sports
+window.showAnalysis = function(type) {
+
+  const data = sportData[type] || sportData.football;
+
+  const box = document.getElementById("analysis");
+  const title = document.getElementById("analysisTitle");
+  const probs = document.getElementById("probs");
+  const details = document.getElementById("details");
+
+  box.classList.add("show");
+
+  title.textContent = data.icon + " " + data.title;
+
+  probs.innerHTML = data.probabilities.map((p, i) => `
+    <div class="prob">
+      <b>${p}</b>
+      ${data.names[i]}
+    </div>
+  `).join("");
+
+  details.textContent = data.text;
+
+  box.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  // Sauvegarde dans l'historique
+  const historique = JSON.parse(
+    localStorage.getItem("odelle_history") || "[]"
+  );
+
+  historique.unshift({
+    sport: data.title,
+    date: new Date().toLocaleString("fr-FR")
+  });
+
+  localStorage.setItem(
+    "odelle_history",
+    JSON.stringify(historique.slice(0, 20))
+  );
+};
+
+
+// Clic sur les cartes des sports
+document.querySelectorAll(".sport").forEach((card, index) => {
+
+  const types = [
+    "football",
+    "basketball",
+    "tennis",
+    "volleyball",
+    "combat",
+    "motorsport"
+  ];
+
+  card.style.cursor = "pointer";
+
+  card.addEventListener("click", function() {
+    showAnalysis(types[index]);
+  });
+
+});
+
+
+// Bouton principal
+document.getElementById("analyzeBtn").onclick = function() {
+
+  const choix = prompt(
+    "Quel sport veux-tu analyser ?\n\n" +
+    "1 - Football ⚽\n" +
+    "2 - Basketball 🏀\n" +
+    "3 - Tennis 🎾\n" +
+    "4 - Volleyball 🏐\n" +
+    "5 - MMA / Boxe 🥊\n" +
+    "6 - Motorsport 🏎️"
+  );
+
+  const choixSport = {
+    "1": "football",
+    "2": "basketball",
+    "3": "tennis",
+    "4": "volleyball",
+    "5": "combat",
+    "6": "motorsport"
+  };
+
+  if (choixSport[choix]) {
+    showAnalysis(choixSport[choix]);
+  }
+};
+
+
+// Navigation du bas
+const navButtons = document.querySelectorAll("nav button");
+
+navButtons[0].onclick = function() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
+
+navButtons[1].onclick = function() {
+
+  alert(
+    "🔎 EXPLORER\n\n" +
+    "⚽ Football\n" +
+    "🏀 Basketball\n" +
+    "🎾 Tennis\n" +
+    "🏐 Volleyball\n" +
+    "🥊 MMA / Boxe\n" +
+    "🏎️ Motorsport"
+  );
+};
+
+navButtons[2].onclick = function() {
+
+  alert(
+    "⭐ FAVORIS\n\n" +
+    "Aucun match favori pour le moment."
+  );
+};
+
+navButtons[3].onclick = function() {
+
+  const historique = JSON.parse(
+    localStorage.getItem("odelle_history") || "[]"
+  );
+
+  if (historique.length === 0) {
+
+    alert("🕘 HISTORIQUE\n\nAucune analyse effectuée.");
+
+  } else {
+
+    alert(
+      "🕘 HISTORIQUE\n\n" +
+      historique.map((h, i) =>
+        (i + 1) + ". " + h.sport + "\n" + h.date
+      ).join("\n\n")
+    );
+
+  }
+};
+
+console.log("Ôdèlle : système interactif chargé.");
 </script>
 
 </body>
